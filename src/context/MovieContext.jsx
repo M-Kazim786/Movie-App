@@ -1,53 +1,50 @@
-import { createContext,useState,useContext,useEffect} from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 
-const MovieContext=createContext();
+const MovieContext = createContext();
 
-export const useMovieContext=()=> useContext(MovieContext);
+export const useMovieContext = () => useContext(MovieContext);
 
-export const MovieProvider=({children})=>{
+export const MovieProvider = ({ children }) => {
+  const [favorites, setFavorites] = useState([]);
 
-    const[favorites,setFavorites]=useState([]);
-
-    useEffect(()=>{
-        const savedFavs=JSON.parse(localStorage.getItem('favorites'));
-        setFavorites(savedFavs);
-
-    },[])
-
-    useEffect(()=>{
-        if(favorites.length > 0) {
-        localStorage.setItem('favorites',JSON.stringify(favorites));
-        }
-
-    },[favorites])
-
-    const addToFav=(movie)=>{
-        setFavorites(prev=>[...prev,movie]);
-
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedFavs = JSON.parse(localStorage.getItem("favorites"));
+      setFavorites(savedFavs || []); // Fallback to an empty array if savedFavs is null
     }
-    const removeFromFav=(movieId)=>{
-        setFavorites(prev=>{
-            const updateFav=prev.filter(movie=>movie.id!==movieId);
-            localStorage.setItem('favorites',JSON.stringify(updateFav));
-            return updateFav;
-    })
+  }, []);
 
-
+  useEffect(() => {
+    if (favorites.length > 0) {
+      localStorage.setItem("favorites", JSON.stringify(favorites));
     }
-    const isFav=(movieId)=>{
-        return favorites.some(movie=>movie.id===movieId)
+  }, [favorites]);
 
-    }
+  const addToFav = (movie) => {
+    setFavorites((prev) => {
+      if (!prev.some((m) => m.id === movie.id)) {
+        return [...prev, movie];
+      }
+      return prev;
+    });
+  };
 
-    const value={
-        favorites,
-        addToFav,
-        removeFromFav,
-        isFav,
-    }
+  const removeFromFav = (movieId) => {
+    setFavorites((prev) => {
+      return prev.filter((movie) => movie.id !== movieId);
+    });
+  };
 
-return <MovieContext.Provider value={value}>
-    {children}
-</MovieContext.Provider>
+  const isFav = (movieId) => {
+    return favorites.some((movie) => movie.id === movieId);
+  };
 
-}
+  const value = {
+    favorites,
+    addToFav,
+    removeFromFav,
+    isFav,
+  };
+
+  return <MovieContext.Provider value={value}>{children}</MovieContext.Provider>;
+};
