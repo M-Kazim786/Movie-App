@@ -4,6 +4,7 @@ import {Routes,Route, useLocation} from 'react-router-dom'
 import Navbar from "./components/Navbar"
 import { MovieProvider } from "./context/MovieContext"
 import {motion} from 'framer-motion'
+import MovieDetails from "./pages/MovieDetails"
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home/>}/>
           <Route path="/favorites" element={<Favorites/>}/>
+          <Route path="/movie_details" element={<MovieDetails/>}/>
         </Routes>
         </motion.div>
       </main>

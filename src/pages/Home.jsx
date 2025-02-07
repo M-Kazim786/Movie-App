@@ -16,8 +16,6 @@ function Home() {
             try {
                 const popularMovies=await getPopularMovies();
                 setMovies(popularMovies);
-                console.log(popularMovies);
-
 
             } catch (error) {
                 console.log(error);
