@@ -15,7 +15,7 @@ function MovieCard({ movie }) {
 
   return (
     <Link
-      to="/movie_details"
+      to="/movie-details"
       onClick={() => selectMovie(movie)}
       className="block bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-purple-500/20 transition group border border-gray-700"
     >
