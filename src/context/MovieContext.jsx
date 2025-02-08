@@ -7,13 +7,14 @@ export const useMovieContext = () => useContext(MovieContext);
 export const MovieProvider = ({ children }) => {
 
   const [favorites, setFavorites] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(() => JSON.parse(localStorage.getItem("selectedMovie")) || null);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
+  // Favorites local storage
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedFavs = JSON.parse(localStorage.getItem("favorites"));
-      setFavorites(savedFavs || []); // Fallback to an empty array if savedFavs is null
+      setFavorites(savedFavs || []);
     }
   }, []);
 
@@ -23,11 +24,20 @@ export const MovieProvider = ({ children }) => {
     }
   }, [favorites]);
 
+  // MovieDetails page local storage
+
+  useEffect(()=>{
+    const savedMovies=JSON.parse(localStorage.getItem('selectedMovie'));
+    setSelectedMovie(savedMovies || null);
+  },[])
+
   useEffect(() => {
     if (selectedMovie) {
       localStorage.setItem("selectedMovie", JSON.stringify(selectedMovie));
     }
   }, [selectedMovie]);
+
+  // Favorites page functions
 
   const addToFav = (movie) => {
     setFavorites((prev) => {
@@ -47,6 +57,8 @@ export const MovieProvider = ({ children }) => {
   const isFav = (movieId) => {
     return favorites.some((movie) => movie.id === movieId);
   };
+
+  // MovieDetails page functions
 
   const selectMovie = (movie) => {
     setSelectedMovie(movie);
