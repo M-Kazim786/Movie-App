@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { getMovieDetails } from '../services/api';
-import { useMovieContext } from '../context/MovieContext';
-import { Loader } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { getMovieDetails, getMovieTrailers } from "../services/api";
+import { useMovieContext } from "../context/MovieContext";
+import { Loader } from "lucide-react";
 
 const MovieDetails = () => {
   const { selectedMovie } = useMovieContext();
   const [loading, setLoading] = useState(true);
   const [movieDetails, setMovieDetails] = useState(null);
+  const [trailerKey, setTrailerKey] = useState(null);
 
   useEffect(() => {
     const loadMovies = async () => {
@@ -14,12 +15,27 @@ const MovieDetails = () => {
         const details = await getMovieDetails(selectedMovie.id);
         setMovieDetails(details);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
     };
     loadMovies();
+  }, [selectedMovie]);
+
+  useEffect(() => {
+    const loadTrailer = async () => {
+      try {
+        const trailerResponse = await getMovieTrailers(selectedMovie.id);
+        const trailer = trailerResponse.results.find(
+          (video) => video.type === "Trailer" && video.site === "YouTube"
+        );
+        if (trailer) setTrailerKey(trailer.key);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    loadTrailer();
   }, [selectedMovie]);
 
   if (loading) {
@@ -62,7 +78,7 @@ const MovieDetails = () => {
 
           {/* Details */}
           <div className="md:w-2/3 md:pl-12 mt-8 md:mt-0">
-            <h1 className="text-5xl font-bold text-white mb-4">{movieDetails.title}</h1>
+            <h1 className="text-5xl font-bold mb-4">{movieDetails.title}</h1>
             <p className="text-xl text-gray-300 italic mb-6">{movieDetails.tagline}</p>
 
             {/* Metadata */}
@@ -78,7 +94,7 @@ const MovieDetails = () => {
               <div>
                 <span className="text-gray-400 font-semibold">Genres:</span>
                 <span className="text-white ml-2">
-                  {movieDetails.genres.map((genre) => genre.name).join(', ')}
+                  {movieDetails.genres.map((genre) => genre.name).join(", ")}
                 </span>
               </div>
               <div>
@@ -91,11 +107,11 @@ const MovieDetails = () => {
 
             {/* Overview */}
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-white mb-4">Overview</h2>
+              <h2 className="text-3xl font-bold mb-4">Overview</h2>
               <p className="text-lg text-gray-300 leading-relaxed">{movieDetails.overview}</p>
             </div>
 
-            {/* Additional Details (if available) */}
+            {/* Official Website */}
             {movieDetails.homepage && (
               <div className="mb-8">
                 <a
@@ -110,6 +126,25 @@ const MovieDetails = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Trailer Section */}
+      <div className="flex justify-center items-center mt-12">
+        {trailerKey ? (
+          <div className="relative w-full max-w-4xl">
+            {/* Dark overlay for cinematic effect */}
+            <div className="absolute inset-0 bg-black opacity-50 rounded-lg"></div>
+            <iframe
+              className="w-full aspect-video rounded-lg shadow-lg relative"
+              src={`https://www.youtube.com/embed/${trailerKey}`}
+              title="Movie Trailer"
+              frameBorder="0"
+              allowFullScreen
+            ></iframe>
+          </div>
+        ) : (
+          <p className="text-center text-gray-300 text-lg">No trailer available.</p>
+        )}
       </div>
     </div>
   );

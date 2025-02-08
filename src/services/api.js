@@ -18,3 +18,10 @@ export const getMovieDetails=async(movie_id)=>{
     return response.data;
 
 }
+export const getMovieTrailers= async(movie_id)=>{
+    const response=await axios.get(`${BASE_URL}/movie/${movie_id}/videos?api_key=${API_KEY}`);
+    console.log(response.data);
+    
+    return response.data;
+
+}
