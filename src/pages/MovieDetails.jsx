@@ -149,10 +149,11 @@ const MovieDetails = () => {
             <div className="relative w-full aspect-video">
               <iframe
                 className="w-full h-full"
-                src={`https://www.youtube.com/embed/${trailerKey}`}
+                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&enablejsapi=1`}
                 title="Movie Trailer"
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                sandbox="allow-same-origin allow-scripts allow-presentation"
+                allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
               ></iframe>
             </div>
