@@ -146,14 +146,15 @@ const MovieDetails = () => {
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-purple-700 via-blue-500 to-purple-700 opacity-75"></div>
             {/* Trailer Container */}
-            <div className="relative w-full aspect-video">
+            <div className="relative w-full h-[500px] flex justify-center items-center bg-black">
+              {/* Video Frame */}
               <iframe
-                className="w-full h-full"
-                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&enablejsapi=1`}
+                className="w-full h-full cursor-auto" // Ensures cursor stays visible
+                src={`https://www.youtube.com/embed/${trailerKey}?controls=1&enablejsapi=1`}
                 title="Movie Trailer"
                 frameBorder="0"
                 sandbox="allow-same-origin allow-scripts allow-presentation"
-                allow="autoplay; encrypted-media; picture-in-picture"
+                allow="encrypted-media; picture-in-picture"
                 allowFullScreen
               ></iframe>
             </div>
