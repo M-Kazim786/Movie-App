@@ -1,14 +1,25 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Navbar from "./components/Navbar";
 import { MovieProvider } from "./context/MovieContext";
 import { motion } from "framer-motion";
-import { Loader } from 'lucide-react';
-
+import { Loader } from "lucide-react";
+import { SignedIn, SignedOut, useAuth } from "@clerk/clerk-react";
+import Auth from "./components/Auth";
 
 const Home = lazy(() => import("./pages/Home"));
 const Favorites = lazy(() => import("./pages/Favorites"));
 const MovieDetails = lazy(() => import("./pages/MovieDetails"));
+
+function ProtectedRoute({ children }) {
+  const { isSignedIn } = useAuth();
+
+  return isSignedIn ? (
+    children
+  ) : (
+    <Navigate to="/auth" replace state={{ from: location.pathname }} />
+  );
+}
 
 function App() {
   const location = useLocation();
@@ -28,8 +39,16 @@ function App() {
             >
               <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<Home />} />
-                <Route path="/favorites" element={<Favorites />} />
-                <Route path="/movie-details" element={<MovieDetails />} /> {/* Fixed Route */}
+                <Route path="/movie-details" element={<MovieDetails />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route
+                  path="/favorites"
+                  element={
+                    <ProtectedRoute>
+                      <Favorites />
+                    </ProtectedRoute>
+                  }
+                />
               </Routes>
             </motion.div>
           </Suspense>
