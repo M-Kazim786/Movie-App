@@ -8,7 +8,7 @@ function MovieCard({ movie }) {
   const favorite = isFav(movie.id);
 
   const favBtn = (e) => {
-    e.preventDefault(); // Prevent link navigation when clicking the heart button
+    e.preventDefault();
     if (favorite) removeFromFav(movie.id);
     else addToFav(movie);
   };
@@ -37,7 +37,7 @@ function MovieCard({ movie }) {
         <button
           className="absolute top-2 right-2 p-2 bg-gray-900/90 rounded-full opacity-0 group-hover:opacity-100 transition hover:scale-110"
           onClick={(e) => {
-            e.preventDefault(); // Prevent link navigation when clicking the heart button
+            e.preventDefault();
             favBtn(e);
           }}
         >

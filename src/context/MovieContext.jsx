@@ -1,43 +1,31 @@
 import { createContext, useState, useContext, useEffect } from "react";
 
 const MovieContext = createContext();
-
 export const useMovieContext = () => useContext(MovieContext);
 
 export const MovieProvider = ({ children }) => {
-
   const [favorites, setFavorites] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  // Favorites local storage
-
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedFavs = JSON.parse(localStorage.getItem("favorites"));
-      setFavorites(savedFavs || []);
-    }
+    const savedFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(savedFavs);
   }, []);
 
   useEffect(() => {
-    if (favorites.length > 0) {
-      localStorage.setItem("favorites", JSON.stringify(favorites));
-    }
+    localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
-  // MovieDetails page local storage
-
-  useEffect(()=>{
-    const savedMovies=JSON.parse(localStorage.getItem('selectedMovie'));
-    setSelectedMovie(savedMovies || null);
-  },[])
+  useEffect(() => {
+    const savedMovie = JSON.parse(localStorage.getItem("selectedMovie"));
+    setSelectedMovie(savedMovie || null);
+  }, []);
 
   useEffect(() => {
     if (selectedMovie) {
       localStorage.setItem("selectedMovie", JSON.stringify(selectedMovie));
     }
   }, [selectedMovie]);
-
-  // Favorites page functions
 
   const addToFav = (movie) => {
     setFavorites((prev) => {
@@ -49,30 +37,19 @@ export const MovieProvider = ({ children }) => {
   };
 
   const removeFromFav = (movieId) => {
-    setFavorites((prev) => {
-      return prev.filter((movie) => movie.id !== movieId);
-    });
+    setFavorites((prev) => prev.filter((movie) => movie.id !== movieId));
   };
 
-  const isFav = (movieId) => {
-    return favorites.some((movie) => movie.id === movieId);
-  };
-
-  // MovieDetails page functions
+  const isFav = (movieId) => favorites.some((movie) => movie.id === movieId);
 
   const selectMovie = (movie) => {
     setSelectedMovie(movie);
     localStorage.setItem("selectedMovie", JSON.stringify(movie));
   };
 
-  const value = {
-    favorites,
-    addToFav,
-    removeFromFav,
-    isFav,
-    selectMovie,
-    selectedMovie,
-  };
-
-  return <MovieContext.Provider value={value}>{children}</MovieContext.Provider>;
+  return (
+    <MovieContext.Provider value={{ favorites, addToFav, removeFromFav, isFav, selectMovie, selectedMovie }}>
+      {children}
+    </MovieContext.Provider>
+  );
 };

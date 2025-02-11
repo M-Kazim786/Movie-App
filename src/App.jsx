@@ -6,20 +6,11 @@ import { motion } from "framer-motion";
 import { Loader } from "lucide-react";
 import { SignedIn, SignedOut, useAuth } from "@clerk/clerk-react";
 import Auth from "./components/Auth";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const Home = lazy(() => import("./pages/Home"));
 const Favorites = lazy(() => import("./pages/Favorites"));
 const MovieDetails = lazy(() => import("./pages/MovieDetails"));
-
-function ProtectedRoute({ children }) {
-  const { isSignedIn } = useAuth();
-
-  return isSignedIn ? (
-    children
-  ) : (
-    <Navigate to="/auth" replace state={{ from: location.pathname }} />
-  );
-}
 
 function App() {
   const location = useLocation();
